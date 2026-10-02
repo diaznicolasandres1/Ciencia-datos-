@@ -19,7 +19,7 @@ La unidad de análisis es **estado y año electoral**, incluyendo al Distrito de
 
 ## 2. Dónde se guardó la solución
 
-Los archivos están en el checkout local del repositorio. No se ejecutó un commit ni una publicación en GitHub durante este trabajo.
+La solución está guardada en el repositorio `diaznicolasandres1/Ciencia-datos-`. El código, los datos y el notebook se publicaron en GitHub; las modificaciones de esta explicación se guardan en el checkout local hasta su siguiente commit.
 
 | Archivo o directorio | Contenido |
 |---|---|
@@ -51,6 +51,48 @@ El dataset final tiene **357 filas y 37 columnas**: siete elecciones por 51 juri
 | FiveThirtyEight, archivo histórico | Estimaciones de intención de voto | 2000–2016; 248 filas con ambos candidatos. No se usa en los modelos por su reconstrucción retrospectiva. |
 | FRED | Desempleo, inflación y crecimiento del PIB real | Todas las elecciones; promedios del año anterior. Las series actuales contienen revisiones históricas. |
 | Census ACS | Población, edad, ingreso, educación, composición racial/étnica, pobreza y desempleo | 255 filas de 2008–2024. Los 102 registros de 2000/2004 quedan sin estas variables. |
+
+### Qué aporta cada dataset al problema
+
+Los resultados electorales aportan la **respuesta que el modelo debe aprender**: quién ganó cada estado. También permiten construir sus entradas históricas, desplazando cuatro años los porcentajes y márgenes. El resultado de 2024 solo puede usarse como etiqueta al evaluar 2024; como predictor de 2028 podría usarse únicamente bajo una proyección explícita de ese ciclo.
+
+Census aporta el **contexto de cada estado**: educación, edad, pobreza, ingresos y población. Hace comparables características de estados con tamaños diferentes al expresarlas como porcentajes. En el modelo ampliado de esta versión entran educación, edad y pobreza; las demás variables quedan disponibles para descripción y futuros análisis justificados.
+
+FRED aporta el **contexto económico nacional**. Se incorpora al dataset para describir los años electorales, pero no entra en los modelos ejecutados. Al repetirse entre todos los estados de una elección, su información independiente proviene principalmente de los pocos años disponibles, no de 357 observaciones económicas diferentes. No se ha estimado su aporte predictivo.
+
+FiveThirtyEight aporta una medida de **intención de voto próxima a la elección**, diferente del resultado anterior y de la demografía. El archivo actual se utiliza para integrar y explorar datos; se excluye del entrenamiento porque es retrospectivo y tiene cobertura incompleta. No se ha probado si mejora las predicciones.
+
+**Integrar una fuente al CSV no equivale a haber demostrado su utilidad en el modelo.** La comparación realizada mide únicamente el efecto de agregar tres variables de Census a las entradas electorales históricas.
+
+### Qué significa curar la información
+
+Curar la información es conservar su procedencia, verificar su significado, corregir representaciones incompatibles, integrar unidades comparables y dejar documentados los problemas que siguen abiertos. No consiste en eliminar filas hasta que el modelo tenga buenos resultados.
+
+| Problema encontrado | Tratamiento aplicado | Motivo y control |
+|---|---|---|
+| Varias filas por candidato o línea partidaria | Sumar votos por partido, estado y año | Recuperar el resultado estatal; verificar que votos D + R no superen el total. |
+| TOTAL junto con modos desagregados, si aparecen | Preferir TOTAL dentro de cada estado y año | Evitar duplicar votos; caso cubierto por una prueba, sin afirmar que ocurrió en todos los archivos. |
+| Identificadores con formatos diferentes | FIPS de dos caracteres y abreviaturas normalizadas; nombres completos para presentación | Unir estados por identidad, sin depender de cómo se escribe su nombre. |
+| Fuentes con frecuencias distintas | Encuestas hasta octubre, ACS anterior y economía del año previo | Comparar información referida a una misma elección sin incluir períodos posteriores. |
+| Tablas antiguas de Census incompatibles con códigos modernos | Consultar tablas equivalentes y sumar categorías civiles/educativas correspondientes | Mantener las definiciones de las variables entre años. |
+| Códigos negativos especiales de Census | Convertirlos a faltantes | Evitar interpretar valores especiales como población o porcentajes reales. |
+| Demografía ausente para 2000/2004 | Mantener 102 filas sin esas variables | No inventar datos; restringir la comparación con Census a los años con cobertura. |
+| Población hispana con códigos especiales en 2008 | Mantener 13 faltantes adicionales | La variable tiene 115 faltantes en total y no se usa en el modelo. |
+| Encuestas faltantes | Mantener 109 valores faltantes, sin reemplazarlos por cero | Cero indicaría ausencia de apoyo, no ausencia de medición. |
+| Riesgo de duplicar filas al unir | Validar joins uno-a-uno o muchos-a-uno | Mantener exactamente 357 observaciones estatales únicas. |
+| Riesgo de perder procedencia | Preservar originales y registrar URL, tamaño y SHA-256 | Poder verificar y reconstruir lo procesado. |
+
+No se imputaron medias, no se eliminaron valores extremos ni se ajustó el ingreso por inflación en esta versión. Los faltantes quedan explícitos y los modelos utilizan únicamente columnas disponibles. Los checks de porcentajes, cardinalidad y rezagos no sustituyen revisar fechas de publicación, equivalencia estadística y calidad de cada fuente.
+
+### Qué relaciones se establecen al integrar
+
+Hay que distinguir tres relaciones:
+
+1. **Relación de identidad:** el resultado electoral y Census describen el mismo estado. La unión usa FIPS, no una correlación entre variables.
+2. **Relación temporal:** los atributos se asignan a la elección correspondiente con un año de referencia explícito. El resultado previo se calcula dentro de cada estado, nunca desplazando filas de distintos estados.
+3. **Relación estadística:** después de integrar, se estudia si educación, ingresos o historial electoral se asocian con el margen o el ganador. Estas asociaciones son estimaciones; no son la condición que permite unir las tablas ni prueban causalidad.
+
+Por ejemplo, una fila de Pennsylvania para 2024 combina su resultado observado de 2024, el resultado previo de 2020, ACS de referencia 2022, economía nacional de 2023 y encuestas faltantes para ese ciclo. El modelo histórico solo recibe los atributos de 2020; el ampliado agrega educación, edad y pobreza de ACS. El resultado de 2024 se reserva para comprobar la predicción.
 
 ### Limpieza y unificación
 
@@ -117,6 +159,26 @@ Se calcularon correlaciones de Pearson entre características estatales y margen
 En este corte, los estados con mayor educación universitaria e ingreso mediano tendieron a registrar márgenes demócratas más altos. **Estas asociaciones no prueban causalidad ni describen directamente el voto de cada persona.** Las variables pueden estar relacionadas entre sí; DC también puede influir en los resultados por sus características particulares. Las correlaciones deberían contrastarse con gráficos, otras elecciones y un análisis de sensibilidad sin DC.
 
 ## 5. Modelado y evaluación temporal
+
+### Cómo aprende el modelo y cómo genera una previsión
+
+Se utiliza **aprendizaje supervisado**: cada fila de entrenamiento tiene entradas conocidas (`X`) y una respuesta observada (`y`). En esta implementación, `y = 1` indica ganador demócrata y `y = 0` ganador republicano. No se predice el nombre del candidato ni el porcentaje de votos: se estima la probabilidad del partido ganador de cada estado.
+
+El entrenamiento sigue estos pasos:
+
+1. Seleccionar solo elecciones anteriores a la que se evaluará. Para evaluar 2024, el modelo histórico usa 306 filas de 2000–2020; el ampliado usa 204 filas con ACS de 2008–2020.
+2. Construir `X` con los porcentajes y márgenes de la elección previa, agregando tres variables ACS en el modelo ampliado. Construir `y` con los ganadores observados de esos años de entrenamiento.
+3. Ajustar `StandardScaler` sobre `X` de entrenamiento: aprende una media y una desviación para cada columna. Los datos de evaluación se transforman con esos mismos valores, sin volver a ajustar el escalado.
+4. Ajustar una regresión logística regularizada (`C=1.0`). El algoritmo busca coeficientes que reduzcan el error de las probabilidades respecto de las etiquetas conocidas, penalizando coeficientes excesivos. `max_iter=1000` es un límite de iteraciones de optimización, no una cantidad de elecciones ni de ejemplos.
+5. Aplicar el pipeline entrenado a las entradas de los estados del año evaluado. `predict_proba` produce `P(ganador demócrata)`; su complemento es la probabilidad republicana en esta clasificación binaria.
+6. Con el umbral actual de 0,5, clasificar como demócrata si la probabilidad es al menos 0,5; de lo contrario, como republicano. Comparar después con el resultado real mediante accuracy, Brier y log loss.
+7. Repetir el proceso con una ventana creciente de elecciones: cada evaluación vuelve a entrenar usando únicamente su pasado.
+
+Conceptualmente, la regresión calcula una puntuación `z = intercepto + suma(coeficiente × variable estandarizada)` y la convierte en `p = 1 / (1 + exp(−z))`. Los coeficientes se aprenden de los ejemplos; no son pesos asignados manualmente a cada estado. Su signo no demuestra causalidad y puede verse afectado por variables correlacionadas.
+
+Los hiperparámetros y el umbral se mantuvieron fijos; no se buscaron combinaciones que optimizaran los resultados de 2024. Tampoco se realizó una selección de variables exhaustiva ni se validó la calibración para un pronóstico futuro.
+
+**Qué previsión se ha probado:** reconstruir predicciones de elecciones históricas, entrenando solo con años anteriores. **Qué falta para una previsión futura:** construir entradas disponibles para ese ciclo, justificar los supuestos, comprobar estabilidad y calibración, y establecer cómo las probabilidades estatales se traducen al Colegio Electoral. Entrenar con todos los datos y evaluar sobre esas mismas filas no demostraría capacidad de prever una nueva elección.
 
 ### 5.1 Modelo inicial basado en elecciones anteriores
 
