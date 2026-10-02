@@ -1,0 +1,68 @@
+[
+  {
+    "file": "1976-2020-president.csv",
+    "url": "https://raw.githubusercontent.com/plotly/Figure-Friday/main/2024/week-33/1976-2020-president.csv",
+    "sha256": "2dc706726ef23b11a1d28824042fa9cd6cc406fd0b3afee50ce8fe1d99569416",
+    "bytes": 514153
+  },
+  {
+    "file": "2024-president-state.csv",
+    "url": "https://raw.githubusercontent.com/MEDSL/2024-elections-official/main/2024-president-state.csv",
+    "sha256": "d3170796305a9ee576d6362fbfdd9c4ffdf888566361b4b95f4d5e9d019a6348",
+    "bytes": 75635
+  },
+  {
+    "file": "census_2006_acs1.json",
+    "url": "https://api.census.gov/data/2006/acs/acs1",
+    "sha256": "2ec6366860af0af730d33091cc71b25346f36642027029475cc2d577e207cff2",
+    "bytes": 33463
+  },
+  {
+    "file": "census_2010_acs5.json",
+    "url": "https://api.census.gov/data/2010/acs/acs5",
+    "sha256": "f59de37704db33e786c5b3dd0cbd70cefae27f8524a5f8d56eef7b2499d5237a",
+    "bytes": 33749
+  },
+  {
+    "file": "census_2014_acs5.json",
+    "url": "https://api.census.gov/data/2014/acs/acs5",
+    "sha256": "d37bc800c01b7a34ba6bc377f7878ae9ed135292f601d5d644c92f42b786270e",
+    "bytes": 9086
+  },
+  {
+    "file": "census_2018_acs5.json",
+    "url": "https://api.census.gov/data/2018/acs/acs5",
+    "sha256": "52068aaa70eb7adc631eff33306c99fe1b0d8de8ca6188c9ea2fc1f1ac1e4973",
+    "bytes": 9103
+  },
+  {
+    "file": "census_2022_acs5.json",
+    "url": "https://api.census.gov/data/2022/acs/acs5",
+    "sha256": "013473aa9883ca07f33b200553a04b991d3595dcc45a55e79d11810b5b1783e0",
+    "bytes": 9117
+  },
+  {
+    "file": "fred_CPIAUCSL.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL",
+    "sha256": "f8ecddf53a9a9a74dda92c2c4204e6039466fcb744bc74171b73b5f6aac48119",
+    "bytes": 17744
+  },
+  {
+    "file": "fred_GDPC1.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=GDPC1",
+    "sha256": "5e235cef633b1033da0967311efa89a47845f42e9d6ad8d60b4babed32ae6f08",
+    "bytes": 6527
+  },
+  {
+    "file": "fred_UNRATE.csv",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE",
+    "sha256": "ffe86c903f6944ebc8281e5474a15fc4ceaac61059bc51ec86a7241391d8713d",
+    "bytes": 14196
+  },
+  {
+    "file": "pres_pollaverages_1968-2016.csv.gz",
+    "url": "https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/pres_pollaverages_1968-2016.csv",
+    "sha256": "5631ec26708d2bf06a87bdaa0f513fc341486e2afbf4e81ea9e9757f3ad0b784",
+    "bytes": 5975408
+  }
+]
