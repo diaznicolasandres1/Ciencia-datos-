@@ -1,0 +1,13 @@
+year,dem_candidate,rep_candidate,dem_votes,rep_votes,other_votes,total_votes,dem_electoral,rep_electoral,other_electoral,winner
+1976,Jimmy Carter,Gerald Ford,40831881,39148634,1874485,81855000,297,240,1,Democratic
+1980,Jimmy Carter,Ronald Reagan,35480948,43642639,6505863,85629450,49,489,0,Republican
+1984,Walter Mondale,Ronald Reagan,37577352,54455472,1124599,93157423,13,525,0,Republican
+1988,Michael Dukakis,George H. W. Bush,41809074,48886597,809149,91504820,111,426,1,Republican
+1992,Bill Clinton,George H. W. Bush,44909889,39104550,20632980,104647419,370,168,0,Democratic
+1996,Bill Clinton,Bob Dole,47401185,39197469,9621137,96219791,379,159,0,Democratic
+2000,Al Gore,George W. Bush,50999897,50456002,4071625,105527524,266,271,1,Republican
+2004,John Kerry,George W. Bush,59028444,62040610,1226731,122295785,251,286,1,Republican
+2008,Barack Obama,John McCain,69498516,59948323,2269081,131715920,365,173,0,Democratic
+2012,Barack Obama,Mitt Romney,65915795,60933504,2236111,129085410,332,206,0,Democratic
+2016,Hillary Clinton,Donald Trump,65853514,62984828,7831625,136669967,227,304,7,Republican
+2020,Joseph R. Biden,Donald Trump,81283661,74223975,2891553,158399189,306,232,0,Democratic
