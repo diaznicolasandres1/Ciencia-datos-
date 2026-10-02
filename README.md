@@ -4,6 +4,17 @@ Trabajo de ciencia de datos: construir un dataset estatal, explorar elecciones d
 
 El [informe del trabajo práctico](INFORME.md) explica el proceso, los resultados, la incorporación de Census y las revisiones necesarias para la entrega. Census ya está descargado para 2008–2024; la clave no está guardada en el repositorio y no es necesaria para reutilizar estos archivos.
 
+## Notebook paso a paso
+
+El [notebook del informe](notebooks/01_informe_elecciones.ipynb) muestra cada transformación con tablas, gráficos, comparaciones de modelos y conclusiones. Incluye salidas ejecutadas y reutiliza las funciones de los scripts. Su ejecución por defecto no requiere red ni clave de Census.
+
+```bash
+python -m pip install -r requirements-notebook.txt
+python scripts/run_notebook.py
+```
+
+También puede abrirse en VS Code/Jupyter, seleccionando el entorno Python del proyecto y ejecutando todas las celdas. El helper utiliza ese mismo entorno y falla si alguna celda produce un error. Las copias exportadas durante el notebook se guardan en `.cache/notebook/`, ignorada por Git; los archivos fuente y el dataset entregado se conservan.
+
 ## Ejecutar
 
 Requiere Python 3.12. En este entorno:
