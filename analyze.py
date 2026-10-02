@@ -48,7 +48,8 @@ def backtest(df):
         prob = model.predict_proba(test[FEATURES])[:, 1]
         baseline = test.previous_margin.gt(0).astype(int)
         scores.append({"year": year, "train_rows": len(train), "test_rows": len(test), "accuracy": accuracy_score(test.target_democrat, prob >= .5), "balanced_accuracy": balanced_accuracy_score(test.target_democrat, prob >= .5), "baseline_accuracy": accuracy_score(test.target_democrat, baseline), "brier_score": brier_score_loss(test.target_democrat, prob), "log_loss": log_loss(test.target_democrat, prob, labels=[0, 1])})
-        result = test[["year", "state_po", "winner", "margin", "target_democrat"]].copy()
+        result = test[["year", "state", "state_po", "winner", "margin", "target_democrat"]].copy()
+        result["state"] = result.state.str.title().replace({"District Of Columbia": "District of Columbia"})
         result["p_democrat"] = prob
         result["predicted_winner"] = np.where(prob >= .5, "DEMOCRAT", "REPUBLICAN")
         result["correct"] = result.winner.eq(result.predicted_winner)
@@ -69,7 +70,8 @@ def main():
     national.to_csv(reports / "national_results.csv")
     df.isna().mean().mul(100).sort_values(ascending=False).rename("missing_pct").to_csv(reports / "missing_values.csv")
     competitive = df[df.year == 2024].assign(abs_margin=lambda x: x.margin.abs()).sort_values("abs_margin").head(10)
-    competitive[["state_po", "dem_pct", "rep_pct", "margin", "winner"]].to_csv(reports / "competitive_states_2024.csv", index=False)
+    competitive["state"] = competitive.state.str.title().replace({"District Of Columbia": "District of Columbia"})
+    competitive[["state", "state_po", "dem_pct", "rep_pct", "margin", "winner"]].to_csv(reports / "competitive_states_2024.csv", index=False)
     scores, predictions = backtest(df)
     scores.to_csv(reports / "backtest_metrics.csv", index=False)
     predictions.to_csv(reports / "backtest_predictions.csv", index=False)
@@ -93,7 +95,7 @@ def main():
     ax.legend(); fig.tight_layout(); fig.savefig(figures / "national_vote.png"); plt.close(fig)
     fig, ax = plt.subplots(figsize=(8, 5))
     comp = competitive.sort_values("margin")
-    ax.barh(comp.state_po, comp.margin, color=np.where(comp.margin >= 0, "#2166ac", "#b2182b"))
+    ax.barh(comp.state, comp.margin, color=np.where(comp.margin >= 0, "#2166ac", "#b2182b"))
     ax.axvline(0, color="black", linewidth=.7)
     ax.set(xlabel="Margen demócrata − republicano (puntos porcentuales)", title="Diez estados más competitivos de 2024")
     fig.tight_layout(); fig.savefig(figures / "competitive_states_2024.png"); plt.close(fig)
